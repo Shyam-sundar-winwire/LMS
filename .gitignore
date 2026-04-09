@@ -1,0 +1,12 @@
+bin/
+obj/
+node_modules/
+dist/
+.vs/
+.vscode/
+.dotnet/
+*.user
+*.suo
+*.db
+*.log
+frontend/.env

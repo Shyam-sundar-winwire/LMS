@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/backend/" />
+  <Folder Name="/backend/src/">
+    <Project Path="backend/src/LeaveManagementSystem.API/LeaveManagementSystem.API.csproj" />
+    <Project Path="backend/src/LeaveManagementSystem.Application/LeaveManagementSystem.Application.csproj" />
+    <Project Path="backend/src/LeaveManagementSystem.Domain/LeaveManagementSystem.Domain.csproj" />
+    <Project Path="backend/src/LeaveManagementSystem.Infrastructure/LeaveManagementSystem.Infrastructure.csproj" />
+  </Folder>
+</Solution>
