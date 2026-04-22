@@ -1,6 +1,6 @@
 using System.Security.Claims;
-using LeaveManagementSystem.Application.Common.Exceptions;
-using LeaveManagementSystem.Application.Interfaces;
+using LeaveManagementSystem.Business.Common.Exceptions;
+using LeaveManagementSystem.Business.Interfaces;
 using Microsoft.AspNetCore.Http;
 
 namespace LeaveManagementSystem.Infrastructure.Services;

@@ -1,4 +1,4 @@
-using LeaveManagementSystem.Application.Interfaces.Repositories;
+using LeaveManagementSystem.Business.Interfaces.Repositories;
 using LeaveManagementSystem.Domain.Entities;
 using LeaveManagementSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;

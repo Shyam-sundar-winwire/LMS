@@ -1,5 +1,5 @@
-using LeaveManagementSystem.Application.DTOs.Auth;
-using LeaveManagementSystem.Application.Interfaces.Services;
+using LeaveManagementSystem.Business.DTOs.Auth;
+using LeaveManagementSystem.Business.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

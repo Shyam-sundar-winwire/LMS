@@ -1,8 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using LeaveManagementSystem.Application.DTOs.Auth;
-using LeaveManagementSystem.Application.Interfaces.Security;
+using LeaveManagementSystem.Business.DTOs.Auth;
+using LeaveManagementSystem.Business.Interfaces.Security;
 using LeaveManagementSystem.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

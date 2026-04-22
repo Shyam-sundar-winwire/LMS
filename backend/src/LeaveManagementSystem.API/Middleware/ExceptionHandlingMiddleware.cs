@@ -1,5 +1,5 @@
 using System.Text.Json;
-using LeaveManagementSystem.Application.Common.Exceptions;
+using LeaveManagementSystem.Business.Common.Exceptions;
 
 namespace LeaveManagementSystem.API.Middleware;
 

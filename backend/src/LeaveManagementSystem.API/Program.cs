@@ -1,9 +1,7 @@
 using System.Text;
 using LeaveManagementSystem.API.Middleware;
-using LeaveManagementSystem.Application;
+using LeaveManagementSystem.Business;
 using LeaveManagementSystem.Infrastructure;
-using LeaveManagementSystem.Infrastructure.Persistence;
-using LeaveManagementSystem.Infrastructure.Seed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -56,7 +54,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddApplication();
+builder.Services.AddBusiness();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var jwtSection = builder.Configuration.GetSection("Jwt");
@@ -96,12 +94,6 @@ app.UseHttpsRedirection();
 app.UseCors("Frontend");
 app.UseAuthentication();
 app.UseAuthorization();
-
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await DatabaseSeeder.SeedAsync(dbContext);
-}
 
 app.MapControllers();
 

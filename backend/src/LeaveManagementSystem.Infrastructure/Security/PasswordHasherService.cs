@@ -1,4 +1,4 @@
-using LeaveManagementSystem.Application.Interfaces.Security;
+using LeaveManagementSystem.Business.Interfaces.Security;
 using LeaveManagementSystem.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 

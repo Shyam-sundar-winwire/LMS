@@ -1,6 +1,6 @@
-using LeaveManagementSystem.Application.Interfaces;
-using LeaveManagementSystem.Application.Interfaces.Repositories;
-using LeaveManagementSystem.Application.Interfaces.Security;
+using LeaveManagementSystem.Business.Interfaces;
+using LeaveManagementSystem.Business.Interfaces.Repositories;
+using LeaveManagementSystem.Business.Interfaces.Security;
 using LeaveManagementSystem.Infrastructure.Persistence;
 using LeaveManagementSystem.Infrastructure.Repositories;
 using LeaveManagementSystem.Infrastructure.Security;

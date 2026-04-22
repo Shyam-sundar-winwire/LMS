@@ -7,9 +7,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { InlineErrorState } from "../components/InlineErrorState";
 import { LoadingScreen } from "../components/LoadingScreen";
-import { PageHeader } from "../components/PageHeader";
 import { SectionCard } from "../components/SectionCard";
-import { StatCard } from "../components/StatCard";
 import { dashboardService } from "../services/dashboardService";
 import { leaveService } from "../services/leaveService";
 import { ROLES } from "../utils/constants";
@@ -50,29 +48,11 @@ export const DashboardPage = () => {
     return <InlineErrorState message={error || "Dashboard data is unavailable."} onRetry={loadDashboard} />;
   }
 
-  const roleDescriptions = {
-    [ROLES.EMPLOYEE]: "Summary",
-    [ROLES.MANAGER]: "Summary",
-    [ROLES.HR]: "Summary",
-    [ROLES.ADMIN]: "Summary"
-  };
-
   return (
     <Stack spacing={3}>
-      <PageHeader
-        eyebrow=""
-        title={`${summary.role} dashboard`}
-        subtitle={roleDescriptions[user.role]}
-      />
-
       <SectionCard
         title="Summary"
         subtitle=""
-        action={
-          <Button component={Link} to="/apply" variant="contained">
-            Apply leave
-          </Button>
-        }
       >
         <Grid container spacing={2}>
           <Grid item xs={12} md={4}>
@@ -93,32 +73,14 @@ export const DashboardPage = () => {
           </Grid>
           <Grid item xs={12} md={4}>
             <Typography variant="body2" color="text.secondary">
-              Scope
+              Action
             </Typography>
-            <Typography variant="h6">{user.role === ROLES.EMPLOYEE ? "Personal" : "Team / organization"}</Typography>
+            <Button component={Link} to="/apply" variant="contained" sx={{ mt: 1 }}>
+              Apply leave
+            </Button>
           </Grid>
         </Grid>
       </SectionCard>
-
-      <Grid container spacing={2.5}>
-        <Grid item xs={12} md={3}>
-          <StatCard label="Total requests" value={summary.totalLeaveRequests} helper="" accent="23, 104, 172" />
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <StatCard label="Pending" value={summary.pendingLeaves} helper="" accent="236, 164, 40" />
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <StatCard label="Approved" value={summary.approvedLeaves} helper="" accent="11, 138, 110" />
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <StatCard
-            label={user.role === ROLES.ADMIN || user.role === ROLES.HR ? "Employees" : "Balance days"}
-            value={user.role === ROLES.ADMIN || user.role === ROLES.HR ? summary.employeesCount : summary.availableBalanceDays}
-            helper=""
-            accent="116, 86, 198"
-          />
-        </Grid>
-      </Grid>
 
       <Grid container spacing={2.5}>
         <Grid item xs={12} md={7}>

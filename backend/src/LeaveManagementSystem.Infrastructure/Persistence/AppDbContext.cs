@@ -1,5 +1,6 @@
 using LeaveManagementSystem.Domain.Common;
 using LeaveManagementSystem.Domain.Entities;
+using LeaveManagementSystem.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeaveManagementSystem.Infrastructure.Persistence;
@@ -82,10 +83,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
         });
 
         modelBuilder.Entity<Role>().HasData(
-            new Role { Id = 1, Name = RoleNames.Employee },
-            new Role { Id = 2, Name = RoleNames.Manager },
-            new Role { Id = 3, Name = RoleNames.Hr },
-            new Role { Id = 4, Name = RoleNames.Admin });
+            new Role { Id = (int)RoleType.Employee, Name = RoleNames.Employee },
+            new Role { Id = (int)RoleType.Manager, Name = RoleNames.Manager },
+            new Role { Id = (int)RoleType.Hr, Name = RoleNames.Hr },
+            new Role { Id = (int)RoleType.Admin, Name = RoleNames.Admin });
 
         modelBuilder.Entity<LeaveType>().HasData(
             new LeaveType { Id = 1, Name = "Annual Leave", DefaultDays = 18 },
