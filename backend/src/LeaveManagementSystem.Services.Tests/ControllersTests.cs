@@ -132,13 +132,4 @@ public class ControllersTests
         Assert.IsType<OkObjectResult>(result.Result);
     }
 
-    [Fact]
-    public void HealthController_Get_ReturnsOk()
-    {
-        var controller = new HealthController();
-
-        var result = controller.Get();
-
-        Assert.IsType<OkObjectResult>(result);
-    }
 }

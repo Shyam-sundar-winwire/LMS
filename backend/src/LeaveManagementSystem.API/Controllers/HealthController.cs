@@ -16,6 +16,10 @@ public class HealthController : ControllerBase
         _logger = logger;
     }
 
+    public HealthController()
+    {
+    }
+
     [HttpGet]
     public async Task<IActionResult> Get()
     {
