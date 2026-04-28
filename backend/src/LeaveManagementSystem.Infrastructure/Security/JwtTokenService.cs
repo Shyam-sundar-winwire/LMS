@@ -1,3 +1,4 @@
+using LeaveManagementSystem.Business.Common.Exceptions;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -13,6 +14,31 @@ public class JwtTokenService(IConfiguration configuration) : IJwtTokenService
 {
     public LoginResponseDto GenerateToken(Employee employee)
     {
+        if (employee is null)
+        {
+            throw new ValidationException("Employee is required to generate a token.");
+        }
+
+        if (employee.Id <= 0)
+        {
+            throw new ValidationException("Employee id must be valid to generate a token.");
+        }
+
+        if (string.IsNullOrWhiteSpace(employee.Email))
+        {
+            throw new ValidationException("Employee email is required to generate a token.");
+        }
+
+        if (string.IsNullOrWhiteSpace(employee.FullName))
+        {
+            throw new ValidationException("Employee full name is required to generate a token.");
+        }
+
+        if (string.IsNullOrWhiteSpace(employee.Role?.Name))
+        {
+            throw new ValidationException("Employee role is required to generate a token.");
+        }
+
         var jwtSection = configuration.GetSection("Jwt");
         var secretKey = jwtSection["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey is missing.");
         var issuer = jwtSection["Issuer"] ?? throw new InvalidOperationException("JWT Issuer is missing.");
@@ -48,6 +74,11 @@ public class JwtTokenService(IConfiguration configuration) : IJwtTokenService
 
     public UserProfileDto BuildUserProfile(Employee employee)
     {
+        if (employee is null)
+        {
+            throw new ValidationException("Employee is required to build the user profile.");
+        }
+
         return new UserProfileDto
         {
             Id = employee.Id,

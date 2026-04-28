@@ -18,6 +18,31 @@ public class LeaveService(
 {
     public async Task<LeaveRequestDto> ApplyLeaveAsync(ApplyLeaveRequestDto request, CancellationToken cancellationToken = default)
     {
+        if (request is null)
+        {
+            throw new ValidationException("Leave request payload is required.");
+        }
+
+        if (request.StartDate == default || request.EndDate == default)
+        {
+            throw new ValidationException("Start date and end date are required.");
+        }
+
+        if (request.LeaveTypeId <= 0)
+        {
+            throw new ValidationException("A valid leave type is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Reason))
+        {
+            throw new ValidationException("Reason is required.");
+        }
+
+        if (request.Reason.Trim().Length > 1000)
+        {
+            throw new ValidationException("Reason cannot exceed 1000 characters.");
+        }
+
         if (request.EndDate < request.StartDate)
         {
             throw new ValidationException("End date must be on or after start date.");
@@ -131,10 +156,25 @@ public class LeaveService(
 
     public async Task<LeaveRequestDto> ReviewLeaveAsync(int leaveRequestId, UpdateLeaveRequestStatusDto request, CancellationToken cancellationToken = default)
     {
+        if (request is null)
+        {
+            throw new ValidationException("Review request payload is required.");
+        }
+
+        if (leaveRequestId <= 0)
+        {
+            throw new ValidationException("A valid leave request id is required.");
+        }
+
         var currentUserId = currentUserService.GetUserId();
         var role = currentUserService.GetRole();
         var leaveRequest = await leaveRequestRepository.GetByIdAsync(leaveRequestId, cancellationToken)
             ?? throw new NotFoundException("Leave request not found.");
+
+        if ((request.Comment?.Trim().Length ?? 0) > 500)
+        {
+            throw new ValidationException("Review comment cannot exceed 500 characters.");
+        }
 
         if (leaveRequest.Status != LeaveStatuses.Pending)
         {
@@ -144,7 +184,7 @@ public class LeaveService(
         var owner = await employeeRepository.GetByIdAsync(leaveRequest.EmployeeId, cancellationToken)
             ?? throw new NotFoundException("Employee not found.");
 
-        var isPrivilegedReviewer = role is RoleNames.Hr or RoleNames.Admin;
+        var isPrivilegedReviewer = role == RoleNames.Hr; // Only HR can approve, Admin cannot
         var isManagerReviewer = role == RoleNames.Manager && owner.ManagerId == currentUserId;
         if (!isPrivilegedReviewer && !isManagerReviewer)
         {

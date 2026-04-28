@@ -6,4 +6,5 @@
     <Project Path="backend/src/LeaveManagementSystem.Domain/LeaveManagementSystem.Domain.csproj" />
     <Project Path="backend/src/LeaveManagementSystem.Infrastructure/LeaveManagementSystem.Infrastructure.csproj" />
   </Folder>
+  <Project Path="backend/src/LeaveManagementSystem.Services.Tests/LeaveManagementSystem.Services.Tests.csproj" Id="b160a3bc-1164-499e-bb06-6eb3b8ebd4fa" />
 </Solution>

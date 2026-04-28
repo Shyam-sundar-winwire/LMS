@@ -13,6 +13,17 @@ public class AuthService(
 {
     public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request, CancellationToken cancellationToken = default)
     {
+        if (request is null)
+        {
+            throw new ValidationException("Login request is required.");
+        
+        }
+
+        if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
+        {
+            throw new ValidationException("Email and password are required.");
+        }
+
         var employee = await employeeRepository.GetByEmailAsync(request.Email.Trim().ToLowerInvariant(), cancellationToken);
         if (employee is null || !passwordHasher.Verify(employee.Password, request.Password))
         {

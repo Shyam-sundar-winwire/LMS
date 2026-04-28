@@ -68,6 +68,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 .WithMany()
                 .HasForeignKey(x => x.ReviewedByEmployeeId)
                 .OnDelete(DeleteBehavior.Restrict);
+            
+            // Database constraints for data integrity
+            entity.ToTable(table => table.HasCheckConstraint("CK_LeaveRequest_ValidDates", "EndDate >= StartDate"));
+            entity.ToTable(table => table.HasCheckConstraint("CK_LeaveRequest_FutureDates", "StartDate >= CAST(GETDATE() AS DATE)"));
+            entity.ToTable(table => table.HasCheckConstraint("CK_LeaveRequest_ValidStatus", "Status IN ('Pending', 'Approved', 'Rejected')"));
         });
 
         modelBuilder.Entity<LeaveBalance>(entity =>
@@ -80,6 +85,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.HasOne(x => x.LeaveType)
                 .WithMany(x => x.LeaveBalances)
                 .HasForeignKey(x => x.LeaveTypeId);
+            
+            // Prevent negative balances
+            entity.ToTable(table => table.HasCheckConstraint("CK_LeaveBalance_NonNegative", "RemainingDays >= 0"));
         });
 
         modelBuilder.Entity<Role>().HasData(

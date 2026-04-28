@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
-import { Stack, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { EmptyState } from "../components/EmptyState";
 import { InlineErrorState } from "../components/InlineErrorState";
 import { LoadingScreen } from "../components/LoadingScreen";
@@ -43,44 +43,46 @@ export const AllLeavesPage = () => {
   return (
     <Stack spacing={3}>
       <PageHeader
-        eyebrow=""
+        eyebrow="Organization view"
         title="All leave requests"
-        subtitle=""
+        chips={[`${leaves.length} records`]}
       />
-      <SectionCard title="All leave requests" subtitle="">
+      <SectionCard title="All leave requests">
         {!leaves.length ? (
-          <EmptyState title="No records found" description="" />
+          <EmptyState title="No leave requests found" description="When employees begin submitting leave, organization-wide records will appear here." />
         ) : (
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Employee</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Leave type</TableCell>
-                <TableCell>Dates</TableCell>
-                <TableCell>Days</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Reason</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {leaves.map((leave) => (
-                <TableRow key={leave.id} hover>
-                  <TableCell>{leave.employeeName}</TableCell>
-                  <TableCell>{leave.employeeEmail}</TableCell>
-                  <TableCell>{leave.leaveTypeName}</TableCell>
-                  <TableCell>
-                    {formatDate(leave.startDate)} - {formatDate(leave.endDate)}
-                  </TableCell>
-                  <TableCell>{leave.daysRequested}</TableCell>
-                  <TableCell>
-                    <StatusChip status={leave.status} />
-                  </TableCell>
-                  <TableCell>{leave.reason}</TableCell>
+          <TableContainer sx={{ borderRadius: 3, overflowX: "auto" }}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Employee</TableCell>
+                  <TableCell>Email</TableCell>
+                  <TableCell>Leave type</TableCell>
+                  <TableCell>Dates</TableCell>
+                  <TableCell>Days</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Reason</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {leaves.map((leave) => (
+                  <TableRow key={leave.id} hover>
+                    <TableCell>{leave.employeeName}</TableCell>
+                    <TableCell>{leave.employeeEmail}</TableCell>
+                    <TableCell>{leave.leaveTypeName}</TableCell>
+                    <TableCell>
+                      {formatDate(leave.startDate)} - {formatDate(leave.endDate)}
+                    </TableCell>
+                    <TableCell>{leave.daysRequested}</TableCell>
+                    <TableCell>
+                      <StatusChip status={leave.status} />
+                    </TableCell>
+                    <TableCell sx={{ minWidth: 190, whiteSpace: "normal", wordBreak: "break-word" }}>{leave.reason}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         )}
       </SectionCard>
     </Stack>

@@ -1,8 +1,10 @@
+import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import {
   AppBar,
   Avatar,
+  Button,
   Box,
   Drawer,
   IconButton,
@@ -20,17 +22,41 @@ import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getNavigationItems } from "../utils/routeUtils";
 
-const drawerWidth = 280;
+const drawerWidth = 258;
 
 export const AppShell = ({ children }) => {
   const { user, logout } = useAuth();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigationItems = useMemo(() => getNavigationItems(user?.role), [user?.role]);
+  const today = new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric" }).format(new Date());
 
   const drawer = (
-    <Stack sx={{ height: "100%", p: 2.5 }} spacing={2.5}>
-      <List sx={{ display: "grid", gap: 0.75 }}>
+    <Stack
+      sx={{
+        height: "100%",
+        p: 1.5,
+        backgroundColor: "rgba(244, 248, 252, 0.96)",
+        borderRight: "1px solid rgba(162, 179, 201, 0.18)"
+      }}
+      spacing={1.5}
+    >
+      <Paper
+        sx={{
+          p: 1.5,
+          borderRadius: 4,
+          backgroundColor: "#ffffff"
+        }}
+      >
+        <Stack spacing={0.5}>
+          <Typography variant="h6">Leave Management</Typography>
+          <Typography variant="body2" color="text.secondary">
+            {user?.role}
+          </Typography>
+        </Stack>
+      </Paper>
+
+      <List sx={{ display: "grid", gap: 0.5 }}>
         {navigationItems.map((item) => {
           const Icon = item.icon;
           const isActive = location.pathname === item.path;
@@ -42,16 +68,18 @@ export const AppShell = ({ children }) => {
               to={item.path}
               onClick={() => setMobileOpen(false)}
               sx={{
-                borderRadius: 4.5,
-                py: 1.3,
-                transition: "transform 180ms ease, background-color 180ms ease",
-                backgroundColor: isActive ? "rgba(20, 71, 230, 0.12)" : "transparent",
+                borderRadius: 3.5,
+                py: 0.9,
+                px: 1,
+                transition: "background-color 180ms ease, border-color 180ms ease",
+                backgroundColor: isActive ? "rgba(47, 109, 246, 0.1)" : "transparent",
+                boxShadow: isActive ? "inset 0 0 0 1px rgba(47, 109, 246, 0.12)" : "none",
                 "&:hover": {
-                  transform: "translateX(4px)"
+                  backgroundColor: "rgba(255,255,255,0.82)"
                 }
               }}
             >
-              <ListItemIcon sx={{ minWidth: 40 }}>
+              <ListItemIcon sx={{ minWidth: 34 }}>
                 <Icon color={isActive ? "primary" : "inherit"} />
               </ListItemIcon>
               <ListItemText primary={item.label} />
@@ -62,19 +90,19 @@ export const AppShell = ({ children }) => {
 
       <Box sx={{ flexGrow: 1 }} />
 
-      <Paper sx={{ p: 2 }}>
-        <Stack direction="row" spacing={1.5} alignItems="center">
-          <Avatar sx={{ bgcolor: "primary.main" }}>{user?.fullName?.charAt(0)}</Avatar>
+      <Paper sx={{ p: 1.5, borderRadius: 4 }}>
+        <Stack direction="row" spacing={1.25} alignItems="center" sx={{ mb: 1 }}>
+          <Avatar sx={{ width: 34, height: 34, fontSize: 14, bgcolor: "primary.main" }}>{user?.fullName?.charAt(0)}</Avatar>
           <Box sx={{ flexGrow: 1 }}>
             <Typography fontWeight={600}>{user?.fullName}</Typography>
             <Typography variant="body2" color="text.secondary">
               {user?.role}
             </Typography>
           </Box>
-          <IconButton onClick={logout}>
-            <LogoutRoundedIcon />
-          </IconButton>
         </Stack>
+        <Button fullWidth variant="outlined" startIcon={<LogoutRoundedIcon />} onClick={logout}>
+          Sign out
+        </Button>
       </Paper>
     </Stack>
   );
@@ -88,22 +116,32 @@ export const AppShell = ({ children }) => {
         sx={{
           width: { md: `calc(100% - ${drawerWidth}px)` },
           ml: { md: `${drawerWidth}px` },
-          backgroundColor: "rgba(238,243,251,0.74)",
-          backdropFilter: "blur(18px)",
-          borderBottom: "1px solid rgba(255,255,255,0.7)"
+          backgroundColor: "rgba(243, 246, 251, 0.92)",
+          backdropFilter: "blur(14px)",
+          borderBottom: "1px solid rgba(162, 179, 201, 0.18)"
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{ gap: 1.25, minHeight: "64px !important" }}>
           <IconButton sx={{ display: { md: "none" }, mr: 1 }} onClick={() => setMobileOpen(true)}>
             <MenuRoundedIcon />
           </IconButton>
           <Box>
-            <Typography variant="h6">{user?.fullName}</Typography>
+            <Typography variant="h6">Overview</Typography>
             <Typography variant="body2" color="text.secondary">
-              {user?.role}
+              {user?.fullName}
             </Typography>
           </Box>
           <Box sx={{ flexGrow: 1 }} />
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ display: { xs: "none", sm: "flex" } }}>
+            <Paper sx={{ px: 1.25, py: 0.75, borderRadius: 3, backgroundColor: "rgba(255,255,255,0.92)" }}>
+              <Stack direction="row" spacing={1} alignItems="center">
+                <CalendarMonthRoundedIcon sx={{ fontSize: 18, color: "primary.main" }} />
+                <Typography variant="body2" fontWeight={600}>
+                  {today}
+                </Typography>
+              </Stack>
+            </Paper>
+          </Stack>
         </Toolbar>
       </AppBar>
 
@@ -134,8 +172,10 @@ export const AppShell = ({ children }) => {
         </Drawer>
       </Box>
 
-      <Box component="main" sx={{ flexGrow: 1, p: { xs: 2, md: 4 }, pt: { xs: 11, md: 13 } }}>
-        {children}
+      <Box component="main" sx={{ flexGrow: 1, px: { xs: 1.25, md: 2 }, pb: { xs: 1.5, md: 2 }, pt: { xs: 9.5, md: 10.25 } }}>
+        <Box sx={{ maxWidth: 1240, mx: "auto" }}>
+          {children}
+        </Box>
       </Box>
     </Box>
   );

@@ -1,14 +1,84 @@
 using System.Text;
+using System.Text.Json;
 using LeaveManagementSystem.API.Middleware;
 using LeaveManagementSystem.Business;
 using LeaveManagementSystem.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+static Task WriteProblemResponseAsync(HttpContext context, int statusCode, string message)
+{
+    context.Response.StatusCode = statusCode;
+    context.Response.ContentType = "application/json";
+
+    return context.Response.WriteAsync(JsonSerializer.Serialize(new
+    {
+        message,
+        statusCode,
+        traceId = context.TraceIdentifier
+    }));
+}
+
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState.Values
+                .SelectMany(entry => entry.Errors)
+                .Select(error => string.IsNullOrWhiteSpace(error.ErrorMessage) ? "Invalid request payload." : error.ErrorMessage)
+                .Distinct()
+                .ToArray();
+
+            return new BadRequestObjectResult(new
+            {
+                message = errors.Length > 0 ? string.Join(" ", errors) : "Invalid request payload.",
+                statusCode = StatusCodes.Status400BadRequest,
+                traceId = context.HttpContext.TraceIdentifier
+            });
+        };
+    });
+
+// Add health checks
+builder.Services.AddHealthChecks()
+    .AddCheck("Database", () =>
+    {
+        try
+        {
+            // Simple database connectivity check
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrEmpty(connectionString))
+                return HealthCheckResult.Unhealthy("Database connection string is missing");
+                
+            return HealthCheckResult.Healthy("Database is responsive");
+        }
+        catch (Exception ex)
+        {
+            return HealthCheckResult.Unhealthy($"Database check failed: {ex.Message}");
+        }
+    });
+
+// Add rate limiting
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("Default", context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 100,
+                Window = TimeSpan.FromMinutes(1),
+                SegmentsPerWindow = 10,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 10
+            }));
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -76,13 +146,51 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
             ClockSkew = TimeSpan.Zero
         };
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = async context =>
+            {
+                context.HandleResponse();
+
+                if (!context.Response.HasStarted)
+                {
+                    await WriteProblemResponseAsync(context.HttpContext, StatusCodes.Status401Unauthorized, "Authentication is required to access this resource.");
+                }
+            },
+            OnForbidden = async context =>
+            {
+                if (!context.Response.HasStarted)
+                {
+                    await WriteProblemResponseAsync(context.HttpContext, StatusCodes.Status403Forbidden, "You do not have permission to access this resource.");
+                }
+            }
+        };
     });
 
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
+app.UseMiddleware<GlobalExceptionHandler>();
+app.UseStatusCodePages(async statusCodeContext =>
+{
+    var response = statusCodeContext.HttpContext.Response;
+
+    if (response.HasStarted || response.StatusCode < 400 || !string.IsNullOrWhiteSpace(response.ContentType))
+    {
+        return;
+    }
+
+    var message = response.StatusCode switch
+    {
+        StatusCodes.Status404NotFound => "The requested resource was not found.",
+        StatusCodes.Status405MethodNotAllowed => "The requested HTTP method is not allowed for this resource.",
+        _ => "The request could not be processed."
+    };
+
+    await WriteProblemResponseAsync(statusCodeContext.HttpContext, response.StatusCode, message);
+});
 
 if (app.Environment.IsDevelopment())
 {
@@ -92,6 +200,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("Frontend");
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 

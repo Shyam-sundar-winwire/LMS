@@ -32,21 +32,32 @@ export const LoginPage = () => {
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", py: 4 }}>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        py: { xs: 3, md: 5 },
+        background: "radial-gradient(circle at top, rgba(47, 109, 246, 0.08), transparent 28%)"
+      }}
+    >
       <Container maxWidth="sm">
-        <Stack spacing={3} alignItems="center">
-          <Typography variant="h3" textAlign="center">
-            Leave Management System
-          </Typography>
-          <Paper
-            sx={{
-              width: "100%",
-              p: { xs: 3, md: 4 },
-              background: "linear-gradient(180deg, rgba(255,255,255,0.94), rgba(255,255,255,0.78))"
-            }}
-          >
-            <Stack component="form" spacing={2.5} onSubmit={handleSubmit}>
-              <Typography variant="h5">Sign in</Typography>
+        <Paper
+          sx={{
+            px: { xs: 3, md: 4 },
+            py: { xs: 3.5, md: 4 },
+            borderRadius: 4,
+            maxWidth: 460,
+            mx: "auto",
+            backgroundColor: "#ffffff"
+          }}
+        >
+          <Stack spacing={3}>
+            <Stack spacing={0.75} alignItems="center" textAlign="center">
+              <Typography variant="h4">Sign in</Typography>
+            </Stack>
+
+            <Stack component="form" spacing={2.25} onSubmit={handleSubmit}>
               {error ? <Alert severity="error">{error}</Alert> : null}
               <TextField
                 label="Email"
@@ -66,8 +77,8 @@ export const LoginPage = () => {
                 {loading ? "Signing in..." : "Continue"}
               </Button>
             </Stack>
-          </Paper>
-        </Stack>
+          </Stack>
+        </Paper>
       </Container>
     </Box>
   );

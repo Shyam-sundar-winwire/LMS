@@ -1,3 +1,4 @@
+using LeaveManagementSystem.Business.Common.Exceptions;
 using LeaveManagementSystem.Business.DTOs.Dashboard;
 using LeaveManagementSystem.Business.Interfaces;
 using LeaveManagementSystem.Business.Interfaces.Repositories;
@@ -36,12 +37,21 @@ public class DashboardService(
 
         if (role == RoleNames.Manager)
         {
-            summary.TeamPendingApprovals = (await leaveRequestRepository.GetPendingForManagerAsync(userId, cancellationToken)).Count;
+            var teamRequests = (await leaveRequestRepository.GetAllAsync(cancellationToken))
+                .Where(request => request.Employee?.ManagerId == userId)
+                .ToList();
+
+            summary.TeamPendingApprovals = teamRequests.Count(request => request.Status == LeaveStatuses.Pending);
             summary.PendingLeaves = summary.TeamPendingApprovals;
             summary.TotalLeaveRequests = (await leaveRequestRepository.GetByEmployeeAsync(userId, cancellationToken)).Count;
-            summary.ApprovedLeaves = await leaveRequestRepository.CountByStatusForEmployeeAsync(userId, LeaveStatuses.Approved, cancellationToken);
-            summary.RejectedLeaves = await leaveRequestRepository.CountByStatusForEmployeeAsync(userId, LeaveStatuses.Rejected, cancellationToken);
+            summary.ApprovedLeaves = teamRequests.Count(request => request.Status == LeaveStatuses.Approved);
+            summary.RejectedLeaves = teamRequests.Count(request => request.Status == LeaveStatuses.Rejected);
             return summary;
+        }
+
+        if (role is not (RoleNames.Hr or RoleNames.Admin))
+        {
+            throw new ForbiddenException("You are not authorized to view organization-wide dashboard data.");
         }
 
         summary.TotalLeaveRequests = (await leaveRequestRepository.GetAllAsync(cancellationToken)).Count;

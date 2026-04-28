@@ -1,8 +1,17 @@
-import { Stack, CircularProgress, Typography } from "@mui/material";
+import { CircularProgress, Paper, Stack, Typography } from "@mui/material";
 
 export const LoadingScreen = ({ message = "Loading workspace..." }) => (
-  <Stack alignItems="center" justifyContent="center" spacing={2} sx={{ minHeight: "40vh" }}>
-    <CircularProgress />
-    <Typography color="text.secondary">{message}</Typography>
-  </Stack>
+  <Paper
+    sx={{
+      minHeight: "42vh",
+      display: "grid",
+      placeItems: "center",
+      backgroundColor: "#ffffff"
+    }}
+  >
+    <Stack alignItems="center" justifyContent="center" spacing={2}>
+      <CircularProgress />
+      <Typography color="text.secondary">{message}</Typography>
+    </Stack>
+  </Paper>
 );

@@ -23,7 +23,7 @@ const LoginGuard = () => {
 };
 
 const sharedRoles = [ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.HR, ROLES.ADMIN];
-const approvalRoles = [ROLES.MANAGER, ROLES.HR, ROLES.ADMIN];
+const approvalRoles = [ROLES.MANAGER, ROLES.HR]; // Admin cannot approve
 const allLeaveRoles = [ROLES.HR, ROLES.ADMIN];
 
 function App() {

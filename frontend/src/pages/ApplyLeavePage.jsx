@@ -1,4 +1,4 @@
-import { Alert, Button, Grid, MenuItem, Stack, TextField, Typography } from "@mui/material";
+import { Alert, Button, Chip, Grid, MenuItem, Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { InlineErrorState } from "../components/InlineErrorState";
 import { LoadingScreen } from "../components/LoadingScreen";
@@ -77,17 +77,19 @@ export const ApplyLeavePage = () => {
     return <InlineErrorState message={loadError} onRetry={loadFormData} />;
   }
 
+  const selectedBalance = balances.find((balance) => balance.leaveTypeId === Number(form.leaveTypeId));
+
   return (
     <Stack spacing={3}>
       <PageHeader
-        eyebrow=""
+        eyebrow="Request leave"
         title="Apply leave"
-        subtitle=""
+        chips={selectedBalance ? [`${selectedBalance.remainingDays} days left in ${selectedBalance.leaveTypeName}`] : []}
       />
 
       <Grid container spacing={2.5}>
         <Grid item xs={12} md={7}>
-          <SectionCard title="Apply for leave" subtitle="">
+          <SectionCard title="Apply for leave">
             <Stack component="form" spacing={2} onSubmit={handleSubmit}>
               {feedback ? <Alert severity={feedback.type}>{feedback.message}</Alert> : null}
               <TextField label="Leave type" select value={form.leaveTypeId} onChange={handleChange("leaveTypeId")} fullWidth>
@@ -127,7 +129,7 @@ export const ApplyLeavePage = () => {
           </SectionCard>
         </Grid>
         <Grid item xs={12} md={5}>
-          <SectionCard title="Available balances" subtitle="">
+          <SectionCard title="Available balances">
             <Stack spacing={2}>
               {balances.map((balance) => (
                 <Stack
@@ -141,6 +143,13 @@ export const ApplyLeavePage = () => {
                   <Typography fontWeight={700}>{balance.remainingDays} days</Typography>
                 </Stack>
               ))}
+              {selectedBalance ? (
+                <Chip
+                  label={`${selectedBalance.leaveTypeName}: ${selectedBalance.remainingDays} days available`}
+                  variant="outlined"
+                  sx={{ alignSelf: "flex-start", backgroundColor: "rgba(255,255,255,0.72)" }}
+                />
+              ) : null}
             </Stack>
           </SectionCard>
         </Grid>
