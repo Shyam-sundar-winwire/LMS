@@ -6,7 +6,8 @@ export const EmptyState = ({ title, description }) => (
     sx={{
       p: 3.5,
       textAlign: "center",
-      backgroundColor: "#ffffff"
+      backgroundColor: "rgba(255, 255, 255, 0.86)",
+      backdropFilter: "blur(12px)"
     }}
   >
     <Stack spacing={1.5} alignItems="center">

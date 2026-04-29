@@ -16,10 +16,17 @@ export const getNavigationItems = (role) => {
     return [...common, { label: "Approvals", path: "/approvals", icon: FactCheckRoundedIcon }];
   }
 
-  if (role === ROLES.HR || role === ROLES.ADMIN) {
+  if (role === ROLES.HR) {
     return [
       ...common,
       { label: "Approvals", path: "/approvals", icon: FactCheckRoundedIcon },
+      { label: "All Leaves", path: "/all-leaves", icon: GroupsRoundedIcon }
+    ];
+  }
+
+  if (role === ROLES.ADMIN) {
+    return [
+      ...common,
       { label: "All Leaves", path: "/all-leaves", icon: GroupsRoundedIcon }
     ];
   }

@@ -6,7 +6,8 @@ export const LoadingScreen = ({ message = "Loading workspace..." }) => (
       minHeight: "42vh",
       display: "grid",
       placeItems: "center",
-      backgroundColor: "#ffffff"
+      backgroundColor: "rgba(255, 255, 255, 0.86)",
+      backdropFilter: "blur(12px)"
     }}
   >
     <Stack alignItems="center" justifyContent="center" spacing={2}>

@@ -5,7 +5,8 @@ export const SectionCard = ({ title, subtitle, children, action }) => (
     sx={{
       overflow: "hidden",
       p: { xs: 2, md: 2.25 },
-      backgroundColor: "#ffffff"
+      backgroundColor: "rgba(255, 255, 255, 0.86)",
+      backdropFilter: "blur(12px)"
     }}
   >
     <Stack spacing={1.75}>

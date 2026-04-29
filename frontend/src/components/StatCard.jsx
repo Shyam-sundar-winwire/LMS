@@ -7,7 +7,8 @@ export const StatCard = ({ label, value, helper, accent }) => (
       p: 2,
       borderRadius: 4,
       minHeight: "100%",
-      backgroundColor: "#ffffff",
+      backgroundColor: "rgba(255, 255, 255, 0.86)",
+      backdropFilter: "blur(12px)",
       borderTop: `3px solid rgba(${accent}, 0.85)`
     }}
   >

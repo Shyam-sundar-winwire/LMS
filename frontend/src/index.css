@@ -6,6 +6,7 @@
   --ink-soft: #5a6b84;
   --line-soft: rgba(138, 156, 176, 0.22);
   --panel-glow: rgba(255, 255, 255, 0.9);
+  --app-photo-bg: url("./assets/app-background.jpg");
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -20,9 +21,10 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: "Sora", "Plus Jakarta Sans", "Segoe UI", sans-serif;
-  background:
-    radial-gradient(circle at top left, rgba(47, 109, 246, 0.08), transparent 30%),
-    linear-gradient(180deg, #f8fafc 0%, #f3f6fb 52%, #eef3f9 100%);
+  background-image: linear-gradient(rgba(245, 248, 252, 0.78), rgba(238, 243, 249, 0.86)), var(--app-photo-bg);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   color: var(--ink-strong);
 }
 

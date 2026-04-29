@@ -2,6 +2,9 @@ bin/
 obj/
 node_modules/
 dist/
+TestResults/
+.coverage
+*.coverage
 .vs/
 .vscode/
 .dotnet/
