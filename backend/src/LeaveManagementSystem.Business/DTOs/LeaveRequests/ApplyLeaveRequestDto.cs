@@ -21,7 +21,6 @@ public class ApplyLeaveRequestDto
     public string Reason { get; set; } = string.Empty;
 }
 
-// Custom validation attributes
 public class DateInFutureAttribute : ValidationAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)

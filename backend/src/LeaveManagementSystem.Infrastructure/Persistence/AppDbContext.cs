@@ -86,7 +86,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 .WithMany(x => x.LeaveBalances)
                 .HasForeignKey(x => x.LeaveTypeId);
             
-            // Prevent negative balances
+         
             entity.ToTable(table => table.HasCheckConstraint("CK_LeaveBalance_NonNegative", "RemainingDays >= 0"));
         });
 

@@ -1,60 +1,90 @@
-# Leave Management System
+#  Leave Management System
 
-A full-stack leave management application built with .NET 8 Web API, React + Vite, Material UI, and SQL Server. The solution includes JWT authentication, role-based authorization, leave application and approval workflows, auto-created leave balances, dashboard reporting, and seeded demo users.
+A full-stack enterprise-style application designed to streamline employee leave workflows — from request submission to approval and tracking.
 
-## Tech Stack
+Built using **.NET 8 Web API** and **React**, this project demonstrates real-world architecture, secure authentication, and role-based access control.
 
-- Backend: .NET 8 Web API with Clean Architecture
-- Frontend: React + Vite + Material UI
-- Database: SQL Server / LocalDB
-- Authentication: JWT bearer token
+---
 
-## Solution Structure
+##  Key Highlights
+
+-  Secure JWT-based authentication with role-based access control (RBAC)
+-  Multi-role system: Employee, Manager, HR, Admin
+-  Complete leave lifecycle (apply → approve/reject → track)
+-  Dynamic dashboards based on user roles
+-  Leave balance tracking by type and year
+-  Clean layered backend architecture (API, Business, Domain, Infrastructure)
+-  Unit tested backend using xUnit, Moq, and EF Core InMemory
+-  Protected frontend routes with persistent login state
+
+---
+
+##  Tech Stack
+
+### Backend
+
+- .NET 8 Web API
+- Entity Framework Core
+
+### Frontend
+
+- React (Vite)
+- Material UI
+
+### Database
+
+- SQL Server / SQL Server LocalDB
+
+### Authentication
+
+- JWT (JSON Web Tokens)
+
+### Testing
+
+- xUnit
+- Moq
+- EF Core InMemory Provider
+
+---
+
+##  Project Structure
 
 ```text
 .
-|-- backend/
-|   `-- src/
-|       |-- LeaveManagementSystem.API/
-|       |-- LeaveManagementSystem.Application/
-|       |-- LeaveManagementSystem.Domain/
-|       `-- LeaveManagementSystem.Infrastructure/
-|-- frontend/
-|   `-- src/
-|       |-- components/
-|       |-- context/
-|       |-- pages/
-|       |-- services/
-|       `-- utils/
-`-- LeaveManagementSystem.slnx
+├── backend/
+│   └── src/
+│       ├── LeaveManagementSystem.API/
+│       ├── LeaveManagementSystem.Business/
+│       ├── LeaveManagementSystem.Domain/
+│       ├── LeaveManagementSystem.Infrastructure/
+│       └── LeaveManagementSystem.Services.Tests/
+├── frontend/
+│   └── src/
+│       ├── components/
+│       ├── context/
+│       ├── pages/
+│       ├── services/
+│       └── utils/
+├── global.json
+├── LMS.sln
+└── LeaveManagementSystem.slnx
 ```
 
-## Backend Highlights
+##  Features
 
-- Controller -> Service -> Repository flow
-- DTO-based API responses and request contracts
-- EF Core with SQL Server
-- JWT login and role-based authorization via `[Authorize(Roles = ...)]`
-- Global exception handling middleware
-- Swagger with bearer token support
-- Seed data for roles, users, leave types, balances, and one pending leave request
-- Automatic leave balance creation when missing
+- User authentication with JWT tokens
+- Role-based authorization (Employee, Manager, HR, Admin)
+- Submit leave requests
+- Approve or reject requests
+- Track leave balances
+- View personal and organization-wide dashboards
+- Pre-seeded demo data for quick testing
+- Consistent API error handling
+- Persistent frontend login sessions
 
-## Frontend Highlights
+##  Demo Accounts
 
-- Apple-inspired polished UI with soft glassmorphism panels
-- Role-based protected routing
-- Persistent login using local storage
-- Dashboard summaries by role
-- Apply leave form
-- My leaves tracking page
-- Manager / HR / Admin approvals page
-- HR / Admin all leave requests page
-- Axios API client with auth interceptor
-
-## Seeded Accounts
-
-Use these seeded users to sign in after the API starts:
+Use these credentials after starting the backend:
 
 | Role | Email | Password |
 |------|-------|----------|
@@ -63,44 +93,43 @@ Use these seeded users to sign in after the API starts:
 | Manager | `manager@leaveapp.com` | `Manager@123` |
 | Employee | `employee@leaveapp.com` | `Employee@123` |
 
-## Database Setup
+##  Database Configuration
 
-The API defaults to SQL Server LocalDB:
+By default, the application uses SQL Server LocalDB:
 
 ```json
 "DefaultConnection": "Server=(localdb)\\MSSQLLocalDB;Database=LeaveManagementSystemDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
 ```
 
-If you want to use another SQL Server instance, update:
+To use a different SQL Server instance, update:
 
-- `backend/src/LeaveManagementSystem.API/appsettings.json`
+```text
+backend/src/LeaveManagementSystem.API/appsettings.json
+```
 
-The application calls `EnsureCreated()` during startup and then seeds initial data when the database is empty.
+The database is automatically created and seeded on application startup.
 
-## Run Locally
+##  Run Locally
 
-This repo includes a root `global.json` that pins the SDK to `.NET 8.0.419` so the backend runs with the expected toolchain even if newer SDKs are installed on your machine.
+The repository includes a `global.json` file that pins the .NET SDK version to `8.0.419`.
 
-### 1. Start the backend
+###  Backend
 
 ```powershell
-cd F:\LMS
-dotnet --version
-
-cd backend\src\LeaveManagementSystem.API
+cd backend/src/LeaveManagementSystem.API
 dotnet run
 ```
 
-Default development URLs from `launchSettings.json`:
+Runs on:
 
 - `https://localhost:7057`
 - `http://localhost:5163`
 
-Swagger UI:
+Swagger:
 
 - `https://localhost:7057/swagger`
 
-### 2. Start the frontend
+###  Frontend
 
 ```powershell
 cd frontend
@@ -108,57 +137,82 @@ npm install
 npm run dev
 ```
 
-Vite runs on:
+Runs on:
 
 - `http://localhost:5173`
 
-If you change the backend URL, create `frontend/.env` and set:
+Optional `.env` configuration:
 
 ```env
 VITE_API_BASE_URL=https://localhost:7057/api
 ```
 
-The frontend also falls back across the default local API URLs below during development if the first target is unavailable:
+## API Overview
 
-- `http://localhost:5163/api`
-- `https://localhost:7057/api`
+###  Auth
 
-## API Surface
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/login` | Login and receive JWT token |
 
-### Auth
+###  Dashboard
 
-- `POST /api/auth/login`
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/dashboard/summary` | Get role-based dashboard metrics |
 
-### Dashboard
+###  Leave Requests
 
-- `GET /api/dashboard/summary`
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/leaverequests/types` | Get leave types |
+| GET | `/api/leaverequests/balances` | Get leave balances |
+| GET | `/api/leaverequests/mine` | Get user requests |
+| GET | `/api/leaverequests/approvals` | Get pending approvals |
+| GET | `/api/leaverequests/all` | Get all requests (HR/Admin) |
+| POST | `/api/leaverequests` | Apply for leave |
+| PUT | `/api/leaverequests/{id}/review` | Approve/Reject request |
 
-### Leave Requests
+##  Roles & Permissions
 
-- `GET /api/leaverequests/types`
-- `GET /api/leaverequests/balances`
-- `GET /api/leaverequests/mine`
-- `GET /api/leaverequests/approvals`
-- `GET /api/leaverequests/all`
-- `POST /api/leaverequests`
-- `PUT /api/leaverequests/{id}/review`
+| Role | Capabilities |
+|------|--------------|
+| Employee | Apply leave, view personal requests, track balances |
+| Manager | Employee access + approve team requests |
+| HR | View all requests, manage approvals, view insights |
+| Admin | Full system access |
 
-## Roles
+##  Testing
 
-- Employee: apply leave, view personal requests and balances
-- Manager: employee actions plus team approvals
-- HR: view all leaves, approve requests, see organization stats
-- Admin: system-wide overview and full leave visibility
+Run backend tests:
 
-## Validation Completed
+```powershell
+dotnet test backend/src/LeaveManagementSystem.Services.Tests/LeaveManagementSystem.Services.Tests.csproj
+```
 
-The following checks were completed successfully in this workspace:
+Build frontend:
 
-- `dotnet build backend/src/LeaveManagementSystem.API/LeaveManagementSystem.API.csproj`
-- `npm run build`
+```powershell
+cd frontend
+npm run build
+```
 
-## Notes
+##  Configuration
 
-- LocalDB (`MSSQLLocalDB`) is available on this machine and is the default target.
-- Frontend dependencies were installed successfully and a `package-lock.json` was generated.
-- `npm install` reported 2 moderate audit findings from the dependency tree. The application still builds successfully as-is.
+Important files:
+
+- `backend/src/LeaveManagementSystem.API/appsettings.json`
+- `backend/src/LeaveManagementSystem.API/appsettings.Development.json`
+- `frontend/.env.example`
+- `global.json`
+
+ Do NOT commit:
+
+- JWT secrets
+- Production database credentials
+
+##  Final Note
+
+This project follows a real-world scalable architecture, with clear separation of concerns across backend layers and a modern frontend structure.
+
+It is designed to reflect how enterprise applications are built and maintained.

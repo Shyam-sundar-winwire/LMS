@@ -45,13 +45,13 @@ builder.Services.AddControllers()
         };
     });
 
-// Add health checks
+
 builder.Services.AddHealthChecks()
     .AddCheck("Database", () =>
     {
         try
         {
-            // Simple database connectivity check
+           
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connectionString))
                 return HealthCheckResult.Unhealthy("Database connection string is missing");
@@ -64,7 +64,7 @@ builder.Services.AddHealthChecks()
         }
     });
 
-// Add rate limiting
+
 builder.Services.AddRateLimiter(options =>
 {
     options.AddPolicy("Default", context =>

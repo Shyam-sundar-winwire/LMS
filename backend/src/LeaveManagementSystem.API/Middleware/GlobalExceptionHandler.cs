@@ -13,7 +13,6 @@ public class GlobalExceptionHandler(RequestDelegate next, ILogger<GlobalExceptio
         }
         catch (Exception ex)
         {
-            // Single line to handle all exceptions
             await HandleExceptionAsync(context, ex);
         }
     }
